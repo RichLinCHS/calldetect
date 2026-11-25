@@ -10,13 +10,13 @@ export default async function handler(request, response) {
     return response.status(400).json({ message: "Enter a number with a country code." });
   }
 
-  const { TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN } = process.env;
-  if (!TWILIO_ACCOUNT_SID || !TWILIO_AUTH_TOKEN) {
+  const { TWILIO_API_KEY_SID, TWILIO_API_KEY_SECRET } = process.env;
+  if (!TWILIO_API_KEY_SID || !TWILIO_API_KEY_SECRET) {
     return response.status(503).json({ message: "Live number validation has not been configured." });
   }
 
   try {
-    const auth = Buffer.from(TWILIO_ACCOUNT_SID + ":" + TWILIO_AUTH_TOKEN).toString("base64");
+    const auth = Buffer.from(TWILIO_API_KEY_SID + ":" + TWILIO_API_KEY_SECRET).toString("base64");
     const result = await fetch("https://lookups.twilio.com/v2/PhoneNumbers/" + encodeURIComponent(number), {
       headers: { Authorization: "Basic " + auth },
       signal: AbortSignal.timeout(8000)

@@ -83,6 +83,24 @@ function render() {
   }));
 }
 
+get("paste").onclick = async () => {
+  const input = get("number");
+  const status = get("status");
+  try {
+    const text = await navigator.clipboard.readText();
+    const number = normalize(text);
+    if (!number) {
+      status.textContent = "Copy a phone number from the Phone app, then tap Paste again.";
+      return;
+    }
+    input.value = number;
+    status.textContent = "Number pasted. Tap Save & open.";
+  } catch {
+    input.focus();
+    status.textContent = "Touch and hold the phone number field, then choose Paste.";
+  }
+};
+
 get("save").onsubmit = event => {
   event.preventDefault();
   const number = normalize(get("number").value);

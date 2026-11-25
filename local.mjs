@@ -1,6 +1,7 @@
 import { createServer } from "node:http";
 import { readFile } from "node:fs/promises";
 import lookup from "./api/lookup.js";
+import research from "./api/research.js";
 
 const assets = {
   "/": ["index.html", "text/html"],
@@ -10,7 +11,7 @@ const assets = {
 
 createServer(async (request, response) => {
   const path = new URL(request.url, "http://localhost").pathname;
-  if (path === "/api/lookup") {
+  if (path === "/api/lookup" || path === "/api/research") {
     let body = "";
     for await (const chunk of request) {
       body += chunk;
@@ -20,7 +21,8 @@ createServer(async (request, response) => {
       }
     }
     try { request.body = JSON.parse(body); } catch { request.body = null; }
-    return lookup(request, {
+    const handler = path === "/api/research" ? research : lookup;
+    return handler(request, {
       setHeader: (key, value) => response.setHeader(key, value),
       status: status => ({
         json: data => response.writeHead(status, { "Content-Type": "application/json" }).end(JSON.stringify(data))

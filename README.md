@@ -20,3 +20,11 @@ To enable **Check number**, add `TWILIO_API_KEY_SID` and `TWILIO_API_KEY_SECRET`
 the Vercel project's environment variables and redeploy. The function uses
 Twilio Basic Lookup for validation and numbering country. It does not request
 paid data packages. The saved list and ChatGPT prompt work without credentials.
+
+## Google caller research
+
+Add GEMINI_API_KEY in Production and redeploy to enable Google Search through
+Gemini when Check number is pressed. The Google API receives the selected
+number. A completed search without a public company match shows a caution
+flag. Provider failures, missing credentials, or responses without evidence
+that the number was searched do not produce a scam label.

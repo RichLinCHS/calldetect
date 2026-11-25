@@ -35,8 +35,10 @@
 <button id="copy" class="secondary" type="button">Copy AI lookup prompt</button>
 <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">Open ChatGPT</a>
 </div>
-<p class="hint">Check number sends this number to Twilio when configured. To research business listings and spam reports, paste the copied prompt into ChatGPT.</p>
-<div role="status"><p id="result"></p><p id="caller-status" class="hint" hidden></p></div>
+<p class="hint">Check number sends the selected number to Google Search for public caller research and to Twilio for number validation.</p>
+<div role="status"><p id="caller-status"></p><p id="research-summary"></p><p id="result"></p></div>
+<ul id="research-sources" aria-label="Search sources"></ul>
+<iframe id="search-suggestions" title="Google Search suggestions" sandbox="allow-popups allow-popups-to-escape-sandbox" hidden></iframe>
 <a id="source" hidden target="_blank" rel="noopener noreferrer">Twilio Lookup documentation</a>
 </section>
 </div>

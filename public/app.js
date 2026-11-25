@@ -121,6 +121,7 @@ get("verify").onclick = async () => {
     get("result").textContent = data.valid
       ? (country ? "Numbering country or region: " + country + "." : "Number format validated.")
       : "The lookup provider could not validate this number.";
+    if (data.summary) get("result").textContent += " AI summary: " + data.summary;
     get("source").href = data.source;
     get("source").hidden = false;
   } catch {

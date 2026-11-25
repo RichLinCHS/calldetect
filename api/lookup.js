@@ -23,12 +23,43 @@ export default async function handler(request, response) {
     });
     if (!result.ok) throw new Error("Lookup provider returned an error.");
     const data = await result.json();
+    const summary = await summarize(data);
     return response.status(200).json({
+      summary,
       valid: data.valid === true,
       country: data.country_code ?? null,
       source: "https://www.twilio.com/docs/lookup/v2-api"
     });
   } catch {
     return response.status(502).json({ message: "The lookup provider is unavailable. Try again later." });
+  }
+}
+
+async function summarize(data) {
+  const key = process.env.NVIDIA_API_KEY;
+  if (!key) return null;
+  try {
+    const result = await fetch("https://integrate.api.nvidia.com/v1/chat/completions", {
+      method: "POST",
+      headers: { Authorization: "Bearer " + key, "Content-Type": "application/json" },
+      signal: AbortSignal.timeout(5000),
+      body: JSON.stringify({
+        model: process.env.NVIDIA_MODEL || "meta/llama-3.1-8b-instruct",
+        max_tokens: 120,
+        temperature: 0.1,
+        messages: [{
+          role: "system",
+          content: "Explain the supplied phone-number validation facts in two short sentences. The country code refers to the numbering assignment only. Never infer caller identity, location, or spam status."
+        }, {
+          role: "user",
+          content: JSON.stringify({ valid: data.valid === true, country: data.country_code ?? null })
+        }]
+      })
+    });
+    if (!result.ok) return null;
+    const summary = (await result.json()).choices?.[0]?.message?.content;
+    return typeof summary === "string" ? summary.trim().slice(0, 800) : null;
+  } catch {
+    return null;
   }
 }

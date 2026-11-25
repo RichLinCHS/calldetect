@@ -23,9 +23,10 @@ export default async function handler(request, response) {
     });
     if (!result.ok) throw new Error("Lookup provider returned an error.");
     const data = await result.json();
-    const summary = await summarize(data);
+    const { summary, summaryStatus } = await summarize(data);
     return response.status(200).json({
       summary,
+      summaryStatus,
       valid: data.valid === true,
       country: data.country_code ?? null,
       source: "https://www.twilio.com/docs/lookup/v2-api"
@@ -37,7 +38,7 @@ export default async function handler(request, response) {
 
 async function summarize(data) {
   const key = process.env.NVIDIA_API_KEY;
-  if (!key) return null;
+  if (!key) return { summary: null, summaryStatus: "not_configured" };
   try {
     const result = await fetch("https://integrate.api.nvidia.com/v1/chat/completions", {
       method: "POST",
@@ -56,10 +57,13 @@ async function summarize(data) {
         }]
       })
     });
-    if (!result.ok) return null;
+    if (!result.ok) {
+      return { summary: null, summaryStatus: "provider_http_" + result.status };
+    }
     const summary = (await result.json()).choices?.[0]?.message?.content;
-    return typeof summary === "string" ? summary.trim().slice(0, 800) : null;
+    const text = typeof summary === "string" ? summary.trim().slice(0, 800) : "";
+    return { summary: text || null, summaryStatus: text ? "ready" : "empty" };
   } catch {
-    return null;
+    return { summary: null, summaryStatus: "unreachable" };
   }
 }

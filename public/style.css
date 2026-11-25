@@ -27,3 +27,17 @@ li button[aria-current="true"] { background: #dceee7; }
 @media (max-width: 730px) { main { padding: 32px 15px; } .layout { grid-template-columns: 1fr; } }
 @media (max-width: 450px) { .entry { flex-wrap: wrap; } .entry input { flex: 1 1 calc(100% - 84px); } }
 #google-search { display: inline-flex; align-items: center; min-height: 44px; border: 1px solid #174f41; border-radius: 8px; padding: 9px 12px; text-decoration: none; } #google-search:hover { text-decoration: underline; }
+
+.preferences { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: 8px 16px; margin-bottom: 14px; }
+.preferences label { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; font-size: .9rem; }
+.preferences select { font: inherit; min-height: 40px; border: 1px solid #66867d; border-radius: 8px; padding: 4px 8px; }
+:root[data-theme="dark"] { color-scheme: dark; color: #e1f1ec; background: #101e1a; }
+[data-theme="dark"] section { background: #192d26; border-color: #45645a; }
+[data-theme="dark"] .hint { color: #b7d1c8; }
+[data-theme="dark"] input, [data-theme="dark"] select { background: #11221d; color: #e1f1ec; border-color: #78978c; }
+[data-theme="dark"] button { background: #9dddc6; border-color: #9dddc6; color: #122b23; }
+[data-theme="dark"] a, [data-theme="dark"] button.secondary { color: #a6e5d0; }
+[data-theme="dark"] button.secondary { background: transparent; }
+[data-theme="dark"] #google-search { border-color: #a6e5d0; }
+[data-theme="dark"] li button[aria-current="true"] { background: #284d40; }
+:root[lang="zh-CN"] h1 { letter-spacing: normal; }

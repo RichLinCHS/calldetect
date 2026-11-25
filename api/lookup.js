@@ -43,10 +43,10 @@ async function summarize(data) {
     const result = await fetch("https://integrate.api.nvidia.com/v1/chat/completions", {
       method: "POST",
       headers: { Authorization: "Bearer " + key, "Content-Type": "application/json" },
-      signal: AbortSignal.timeout(5000),
+      signal: AbortSignal.timeout(15000),
       body: JSON.stringify({
-        model: process.env.NVIDIA_MODEL || "meta/llama-3.1-8b-instruct",
-        max_tokens: 120,
+        model: process.env.NVIDIA_MODEL || "nvidia/nemotron-3-nano-omni-30b-a3b-reasoning",
+        max_tokens: 512,
         temperature: 0.1,
         messages: [{
           role: "system",

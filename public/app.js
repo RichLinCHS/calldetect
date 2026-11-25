@@ -39,11 +39,6 @@ function show(number) {
   view += 1;
   get("details").hidden = !number;
   get("details-heading").textContent = number ?? "";
-  if (number) {
-    const terms = '"' + number + '"';
-    const query = /^\+1\d{10}$/.test(number) ? terms + ' OR "' + number.slice(2, 5) + '-' + number.slice(5, 8) + '-' + number.slice(8) + '"' : terms;
-    get("search").href = "https://www.google.com/search?q=" + encodeURIComponent(query);
-  }
   get("result").textContent = "";
   get("source").hidden = true;
   get("verify").disabled = false;
@@ -126,6 +121,7 @@ get("verify").onclick = async () => {
     get("result").textContent = data.valid
       ? (country ? "Numbering country or region: " + country + "." : "Number format validated.")
       : "The lookup provider could not validate this number.";
+    if (data.summary) get("result").textContent += " AI summary: " + data.summary;
     get("source").href = data.source;
     get("source").hidden = false;
   } catch {

@@ -31,14 +31,13 @@
 <h2 id="details-heading" tabindex="-1"></h2>
 <p class="hint">Caller ID can be spoofed. Lookup results describe the displayed number.</p>
 <div class="actions">
+<a id="google-search" target="_blank" rel="noopener noreferrer">Search Google</a>
 <button id="verify" type="button">Check number</button>
 <button id="copy" class="secondary" type="button">Copy AI lookup prompt</button>
 <a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">Open ChatGPT</a>
 </div>
-<p class="hint">Check number sends the selected number to Google Search for public caller research and to Twilio for number validation.</p>
-<div role="status"><p id="caller-status"></p><p id="research-summary"></p><p id="result"></p></div>
-<ul id="research-sources" aria-label="Search sources"></ul>
-<iframe id="search-suggestions" title="Google Search suggestions" sandbox="allow-popups allow-popups-to-escape-sandbox" hidden></iframe>
+<p class="hint">Search Google opens public results for this number in a new tab. Check number validates its format with Twilio.</p>
+<div role="status"><p id="result"></p><p id="caller-status" class="hint" hidden></p></div>
 <a id="source" hidden target="_blank" rel="noopener noreferrer">Twilio Lookup documentation</a>
 </section>
 </div>

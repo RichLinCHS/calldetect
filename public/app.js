@@ -39,8 +39,17 @@ function show(number) {
   view += 1;
   get("details").hidden = !number;
   get("details-heading").textContent = number ?? "";
-  resetResearch();
+  if (number) {
+    const formats = ['"' + number + '"'];
+    if (/^\+1\d{10}$/.test(number)) {
+      formats.push('"' + number.slice(2, 5) + "-" + number.slice(5, 8) + "-" + number.slice(8) + '"');
+    }
+    get("google-search").href = "https://www.google.com/search?q=" + encodeURIComponent(formats.join(" OR "));
+  } else {
+    get("google-search").removeAttribute("href");
+  }
   get("result").textContent = "";
+  get("caller-status").hidden = true;
   get("source").hidden = true;
   get("verify").disabled = false;
   render();
@@ -103,9 +112,9 @@ get("copy").onclick = async () => {
 get("verify").onclick = async () => {
   const current = view;
   get("verify").disabled = true;
+  get("caller-status").hidden = true;
   get("source").hidden = true;
   get("result").textContent = "Checking number…";
-  const research = checkResearch(selected, current);
 
   try {
     const response = await fetch("/api/lookup", {
@@ -123,62 +132,15 @@ get("verify").onclick = async () => {
     get("result").textContent = data.valid
       ? (country ? "Numbering country or region: " + country + "." : "Number format validated.")
       : "The lookup provider could not validate this number.";
+    get("caller-status").textContent = "No caller identity information available. Use caution with unfamiliar numbers.";
+    get("caller-status").hidden = false;
     get("source").href = data.source;
     get("source").hidden = false;
   } catch {
     if (current === view) get("result").textContent = "Number validation is unavailable.";
   } finally {
-    await research;
     if (current === view) get("verify").disabled = false;
   }
 };
 
 render();
-
-function resetResearch() {
-  get("caller-status").textContent = "";
-  get("research-summary").textContent = "";
-  get("research-sources").replaceChildren();
-  get("search-suggestions").removeAttribute("srcdoc");
-  get("search-suggestions").hidden = true;
-}
-
-async function checkResearch(number, current) {
-  resetResearch();
-  get("caller-status").textContent = "Searching Google for a company match…";
-  try {
-    const response = await fetch("/api/research", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ number })
-    });
-    const data = await response.json();
-    if (current !== view) return;
-    if (!response.ok) {
-      get("caller-status").textContent = data.status === "not_configured"
-        ? "Google Search is not configured." : "Google Search unavailable. No scam assessment was made.";
-      return;
-    }
-    get("caller-status").textContent = data.status === "match"
-      ? "Public company match found"
-      : "Likely scam · No public company match found";
-    get("research-summary").textContent = data.status === "match" ? data.summary
-      : data.summary + " This caution flag reflects missing public evidence and does not confirm a scam.";
-    get("research-sources").replaceChildren(...data.sources.map(source => {
-      const row = document.createElement("li");
-      const link = document.createElement("a");
-      link.href = source.url;
-      link.target = "_blank";
-      link.rel = "noopener noreferrer";
-      link.textContent = source.title;
-      row.append(link);
-      return row;
-    }));
-    if (data.suggestions) {
-      get("search-suggestions").srcdoc = '<meta http-equiv="Content-Security-Policy" content="default-src \'none\'; style-src \'unsafe-inline\'; img-src data:"><base target="_blank">' + data.suggestions;
-      get("search-suggestions").hidden = false;
-    }
-  } catch {
-    if (current === view) get("caller-status").textContent = "Google Search unavailable. No scam assessment was made.";
-  }
-}

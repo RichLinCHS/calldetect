@@ -20,8 +20,3 @@ To enable **Check number**, add `TWILIO_API_KEY_SID` and `TWILIO_API_KEY_SECRET`
 the Vercel project's environment variables and redeploy. The function uses
 Twilio Basic Lookup for validation and numbering country. It does not request
 paid data packages. The saved list and ChatGPT prompt work without credentials.
-
-Set NVIDIA_API_KEY in Vercel to enable an AI summary of the Twilio validation
-result. Only the validation status and numbering country are sent to NVIDIA.
-NVIDIA_MODEL can override the default model. NVIDIA failures leave the Twilio
-result available. Live validation still requires the Twilio variables above.

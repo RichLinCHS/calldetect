@@ -27,7 +27,7 @@ export default async function handler(request, response) {
         ].join(" ")
       })
     });
-    if (!result.ok) return response.status(502).json({ status: "unavailable" });
+    if (!result.ok) return response.status(502).json({ status: "unavailable", reason: "provider_" + result.status });
 
     const data = await result.json();
     const steps = Array.isArray(data.steps) ? data.steps : [];
@@ -41,7 +41,7 @@ export default async function handler(request, response) {
         return normalized.includes(digits) || (digits.length === 11 && digits.startsWith("1") && normalized.includes(digits.slice(1)));
       });
     const searchResults = steps.filter(step => step.type === "google_search_result");
-    if (!searched || !searchResults.length) return response.status(502).json({ status: "unavailable" });
+    if (!searched || !searchResults.length) return response.status(502).json({ status: "unavailable", reason: "search_not_verified" });
 
     const output = steps.filter(step => step.type === "model_output")
       .flatMap(step => step.content ?? []).filter(block => block.type === "text");
@@ -52,13 +52,13 @@ export default async function handler(request, response) {
       .filter(item => item.type === "url_citation" && typeof item.url === "string" && /^https:\/\//i.test(item.url))
       .map(item => [item.url, { url: item.url, title: String(item.title || new URL(item.url).hostname).slice(0, 120) }])).values()].slice(0, 8);
     if (!summary || (verdict !== "MATCH" && verdict !== "NO_MATCH") || (verdict === "MATCH" && !sources.length)) {
-      return response.status(502).json({ status: "unavailable" });
+      return response.status(502).json({ status: "unavailable", reason: "response_not_verified" });
     }
 
     const suggestions = searchResults.flatMap(step => step.result ?? [])
       .map(item => item.search_suggestions).find(html => typeof html === "string");
     return response.status(200).json({ status: verdict === "MATCH" ? "match" : "no_match", summary, sources, suggestions });
   } catch {
-    return response.status(502).json({ status: "unavailable" });
+    return response.status(502).json({ status: "unavailable", reason: "request_failed" });
   }
 }

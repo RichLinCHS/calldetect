@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Caller Lookup</title>
+<link rel="stylesheet" href="./style.css">
+<script type="module" src="./app.js"></script>
+</head>
+<body>
+<main>
+<header><h1>Caller Lookup</h1><p>Save an unfamiliar number and check what’s associated with it.</p></header>
+<div class="layout">
+<div>
+<section aria-labelledby="save-heading">
+<h2 id="save-heading">Add a caller</h2>
+<form id="save">
+<label for="number">Phone number</label>
+<div class="entry"><input id="number" type="tel" autocomplete="off" placeholder="(202) 555-0101" required maxlength="40"><button>Save &amp; open</button></div>
+<p class="hint">Copy a number from Phone Recents. Include its country code for numbers outside North America.</p>
+<p id="status" role="status" class="hint"></p>
+</form>
+</section>
+<section aria-labelledby="saved-heading">
+<h2 id="saved-heading">Saved numbers</h2>
+<p id="empty" class="hint">Your saved numbers will appear here.</p>
+<ul id="numbers"></ul>
+</section>
+</div>
+<section aria-labelledby="details-heading" id="details" hidden>
+<h2 id="details-heading" tabindex="-1"></h2>
+<p class="hint">Caller ID can be spoofed. Lookup results describe the displayed number.</p>
+<div class="actions">
+<button id="verify" type="button">Check number</button>
+<button id="copy" class="secondary" type="button">Copy AI lookup prompt</button>
+<a href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer">Open ChatGPT</a>
+</div>
+<p class="hint">Check number sends this number to Twilio when configured. To research business listings and spam reports, paste the copied prompt into ChatGPT.</p>
+<p id="result" role="status"></p>
+<a id="source" hidden target="_blank" rel="noopener noreferrer">Twilio Lookup documentation</a>
+</section>
+</div>
+</main>
+</body>
+</html>

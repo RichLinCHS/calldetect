@@ -40,6 +40,7 @@ function show(number) {
   get("details").hidden = !number;
   get("details-heading").textContent = number ?? "";
   get("result").textContent = "";
+  get("caller-status").hidden = true;
   get("source").hidden = true;
   get("verify").disabled = false;
   render();
@@ -102,6 +103,7 @@ get("copy").onclick = async () => {
 get("verify").onclick = async () => {
   const current = view;
   get("verify").disabled = true;
+  get("caller-status").hidden = true;
   get("source").hidden = true;
   get("result").textContent = "Checking number…";
 
@@ -121,7 +123,8 @@ get("verify").onclick = async () => {
     get("result").textContent = data.valid
       ? (country ? "Numbering country or region: " + country + "." : "Number format validated.")
       : "The lookup provider could not validate this number.";
-    if (data.summary) get("result").textContent += " AI summary: " + data.summary;
+    get("caller-status").textContent = "No caller identity information available. Use caution with unfamiliar numbers.";
+    get("caller-status").hidden = false;
     get("source").href = data.source;
     get("source").hidden = false;
   } catch {
